@@ -6,6 +6,8 @@ echo "================================"
 
 echo "Application build started"
 
+this_command_does_not_exist
+
 echo "Running tests..."
 
 echo "All tests passed"
