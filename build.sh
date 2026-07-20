@@ -12,6 +12,6 @@ echo "Build version: ${APP_VERSION}"
 
 echo "Target environment: ${APP_ENV}"
 
-echo "Deploying version ${APP_VERSION}" to ${APP_ENV}"
+echo "Deploying version ${APP_VERSION} to ${APP_ENV}"
 
 echo "Build completed successfuly"
