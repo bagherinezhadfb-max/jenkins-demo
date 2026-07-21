@@ -15,3 +15,11 @@ echo "Target environment: ${APP_ENV}"
 echo "Deploying version ${APP_VERSION} to ${APP_ENV}"
 
 echo "Build completed successfuly"
+
+echo "Creating build artifact..."
+
+echo "Application version: ${APP_VERSION}" > build-info.txt
+
+echo "Environment: ${APP_ENV}" >> build-info.txt
+
+echo "Artifact created successfully"
