@@ -16,6 +16,8 @@ echo "Deploying version ${APP_VERSION} to ${APP_ENV}"
 
 echo "Build completed successfuly"
 
+echo "Automatic CI trigger test"
+
 echo "Creating build artifact..."
 
 echo "Application version: ${APP_VERSION}" > build-info.txt
