@@ -18,7 +18,7 @@ echo "Build completed successfuly"
 
 echo "Automatic CI trigger test"
 
-echo "Creating build artifact..."
+echo "Creating build artifact...."
 
 echo "Application version: ${APP_VERSION}" > build-info.txt
 
