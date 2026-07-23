@@ -14,6 +14,7 @@ pipeline {
       choices: ['staging', 'production', 'development'],
       description: 'select application environment'
     )
+  }
 
   stages {
 
