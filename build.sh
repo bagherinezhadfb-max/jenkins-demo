@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Testing Jenkins webhook
+
 set -euo pipefail
 
 echo "Application build started"
