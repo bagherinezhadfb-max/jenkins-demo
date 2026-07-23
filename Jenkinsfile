@@ -40,7 +40,13 @@ pipeline {
 
     stage('Deploy') {
       steps {
-        sh 'echo "Deploying the application"'
+
+        sh '''   
+        echo "Deploying the application"
+        echo "version: $APP_VERSION"
+        echo "Environment: $APP_ENV"
+        
+        '''
       }
     }
   }
