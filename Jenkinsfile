@@ -20,8 +20,14 @@ pipeline {
 
     stage('Build') {
       steps {
-        sh 'echo "Building the application..."'
-        sh 'bash build.sh'
+
+        sh '''
+
+          echo "APP_VERSION=$APP_VERSION"
+          echo "APP_ENV=$APP_ENV"
+          bash build.sh
+
+        '''
       }
     }
 
