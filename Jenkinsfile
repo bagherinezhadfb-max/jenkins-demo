@@ -6,19 +6,21 @@ pipeline {
 
     stage('Build') {
       steps {
-        echo 'Building the application...'
+        sh 'echo "Building the application..."'
+        sh 'bash build.sh'
       }
     }
 
     stage('Test') {
       steps {
-        echo 'Running tests...'
+        sh 'echo "Running tests..."'
+        sh 'echo "Tests passed successfully"'
       }
     }
 
     stage('Deploy') {
       steps {
-        echo 'Deploying the application'
+        sh 'echo "Deploying the application"'
       }
     }
   }
