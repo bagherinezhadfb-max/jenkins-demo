@@ -56,13 +56,13 @@ pipeline {
       }
     }
 
-    stage('Deploy to production')
+    stage('Deploy to production') {
    
       when {
         expression {
           params.APP_ENV == 'production'
+        } 
       }
-    }
  
       steps {
    
