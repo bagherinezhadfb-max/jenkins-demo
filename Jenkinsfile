@@ -11,7 +11,7 @@ pipeline {
     
     choice(
       name: 'APP_ENV',
-      choices: ['staging', 'production', 'development'],
+      choices: ['staging', 'production'],
       description: 'select application environment'
     )
   }
@@ -38,14 +38,38 @@ pipeline {
       }
     }
 
-    stage('Deploy') {
+    stage('Deploy to staging') {
+
+      when {
+        expression {
+          params.APP_ENV == 'staging'
+        }
+       }
+ 
       steps {
 
         sh '''   
-        echo "Deploying the application"
-        echo "version: $APP_VERSION"
-        echo "Environment: $APP_ENV"
+          echo "Deploying to STAGING"
+          echo "version: $APP_VERSION"
         
+        '''
+      }
+    }
+
+    stage('Deploy to production')
+   
+      when {
+        expression {
+          params.APP_ENV == 'production'
+      }
+    }
+ 
+      steps {
+   
+        sh '''
+          echo "Deploying to PRODUCTION"
+          echo "version: $APP_VERSION"
+      
         '''
       }
     }
