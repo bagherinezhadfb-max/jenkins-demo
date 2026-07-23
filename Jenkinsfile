@@ -13,6 +13,7 @@ pipeline {
       name: 'APP_ENV',
       choices: ['staging', 'production', 'development'],
       description: 'select application environment'
+    )
 
   stages {
 
