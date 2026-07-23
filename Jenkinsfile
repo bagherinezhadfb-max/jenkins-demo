@@ -2,6 +2,18 @@
 pipeline {
   agent any
 
+  parameters {
+    string(
+      name: 'APP_VERSION',
+      defaultValue: '1',
+      description: 'Enter application version'
+    )
+    
+    choice(
+      name: 'APP_ENV',
+      choices: ['staging', 'production', 'development'],
+      description: 'select application environment'
+
   stages {
 
     stage('Build') {
