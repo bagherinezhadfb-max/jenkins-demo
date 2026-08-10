@@ -17,68 +17,25 @@ pipeline {
   }
 
   stages {
+  
+    //Build
+    //Test
+    //Deploy
+  
+  }
 
-    stage('Build') {
-      steps {
+  post {
 
-        sh '''
-
-          echo "APP_VERSION=$APP_VERSION"
-          echo "APP_ENV=$APP_ENV"
-          bash build.sh
-
-        '''
-      }
+    success {
+      echo 'Pipeline SUCCESS'
     }
 
-    stage('Test') {
-      steps {
-        script {
-          try {
-            sh 'echo "Running tests..."'
-            sh 'exit 1'
-            sh 'echo "Tests passed successfully"'
-          } catch (Exception e) {
-              echo "Test failured but we are handling the error"
-            }
-          } 
-        }
-      }
-
-    stage('Deploy to staging') {
-
-      when {
-        expression {
-          params.APP_ENV == 'staging'
-        }
-       }
- 
-      steps {
-
-        sh '''   
-          echo "Deploying to STAGING"
-          echo "version: $APP_VERSION"
-        
-        '''
-      }
+    failure {
+      echo 'Pipeline FAILURE'
     }
 
-    stage('Deploy to production') {
-   
-      when {
-        expression {
-          params.APP_ENV == 'production'
-        } 
-      }
- 
-      steps {
-   
-        sh '''
-          echo "Deploying to PRODUCTION"
-          echo "version: $APP_VERSION"
-      
-        '''
-      }
+    always {
+      echo 'Pipeline execution finished'
     }
   }
 }
