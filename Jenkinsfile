@@ -33,16 +33,17 @@ pipeline {
 
     stage('Test') {
       steps {
-        catchError(
-          buildResult: 'SUCCESS',
-          stageResult: 'Failure'
-        ) {  
-        sh 'echo "Running tests..."'
-        sh 'exit 1'
-        sh 'echo "Tests passed successfully"'
-        } 
+        script {
+          try {
+            sh 'echo "Running tests..."'
+            sh 'exit 1'
+            sh 'echo "Tests passed successfully"'
+          } catch (Exception e) {
+              echo "Test failured but we are handling the error"
+            }
+          } 
+        }
       }
-    }
 
     stage('Deploy to staging') {
 
