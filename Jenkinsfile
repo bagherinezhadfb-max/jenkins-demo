@@ -89,6 +89,7 @@ pipeline {
 
     always {
       echo 'pipeline execution finished'
+      cleanWs()
     }
   }
 }
