@@ -18,9 +18,9 @@ pipeline {
 
   stages {
   
-    //Build
-    //Test
-    //Deploy
+    echo 'Build'
+    echo 'Test'
+    echo 'Deploy'
   
   }
 
