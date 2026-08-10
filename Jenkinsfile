@@ -38,6 +38,7 @@ pipeline {
           stageResult: 'Failure'
         ) {  
         sh 'echo "Running tests..."'
+        sh 'exit 1'
         sh 'echo "Tests passed successfully"'
         } 
       }
