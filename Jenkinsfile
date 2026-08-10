@@ -39,6 +39,7 @@ pipeline {
         ) {  
         sh 'echo "Running tests..."'
         sh 'echo "Tests passed successfully"'
+        } 
       }
     }
 
