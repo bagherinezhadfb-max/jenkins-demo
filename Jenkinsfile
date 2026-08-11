@@ -38,14 +38,15 @@ pipeline {
     stage('Test') {
       steps {
         withCredentials([
-          string(
-            credentialsId: 'demo-secret',
-            variable: 'MY_SECRET'
+          usernamePassword(
+            credentialsId: 'demo-user-pass',
+            usernameVariable: 'MY_USER',
+            passwordVariable: 'MY_PASSWORD'
           )
         ]) {
            sh '''
-             echo "Credential is available to Jenkins"
-             echo "Secret value: $MY_SECRET"
+             echo "Username is available: $MY_USER"
+             echo "Password is: $MY_PASSWORD"
            '''
         }
        
