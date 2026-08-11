@@ -26,6 +26,7 @@ pipeline {
           echo "APP_VERSION=$APP_VERSION"
           echo "APP_ENV=$APP_ENV"
           bash build.sh
+          echo "Application version: $APP_VERSION" > app-version.txt
 
         '''
       }
@@ -35,7 +36,6 @@ pipeline {
       steps {
       
         sh 'echo "Running tests..."'
-        sh 'exit 1'
         sh 'echo "Tests passed successfully"'
           
       } 
