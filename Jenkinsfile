@@ -29,7 +29,7 @@ pipeline {
           mkdir -p dist
           echo "Application version: $APP_VERSION" > app-version.txt
           echo "Environment: $APP_ENV" > dist/app-info.txt
-          tar -czf dist/app-v${APP_VERSION}.tar.gz distt/app-info.txt
+          tar -czf dist/app-v${APP_VERSION}.tar.gz dist/app-info.txt
 
         '''
       }
