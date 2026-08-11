@@ -102,7 +102,7 @@ pipeline {
           )
         ]) {
            sh '''
-             echo "$DOCKER_TOCKEN" | docker login --username "$DOCKER_USER" --password-stdin
+             echo "$DOCKER_TOKEN" | docker login --username "$DOCKER_USER" --password-stdin
            '''
         }
       }
