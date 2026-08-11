@@ -97,8 +97,8 @@ pipeline {
         withCredentials([
           usernamePassword(
             credentialsId: 'dockerhub-credentials',
-            usernameValue: 'DOCKER_USER',
-            passwordValue: 'DOCKER_TOKEN'
+            usernameVariable: 'DOCKER_USER',
+            passwordVariable: 'DOCKER_TOKEN'
           )
         ]) {
            sh '''
