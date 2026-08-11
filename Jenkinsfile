@@ -26,7 +26,10 @@ pipeline {
           echo "APP_VERSION=$APP_VERSION"
           echo "APP_ENV=$APP_ENV"
           bash build.sh
+          mkdir -p dist
           echo "Application version: $APP_VERSION" > app-version.txt
+          echo "Environment: $APP_ENV" > dist/app-info.txt
+          tar -czf dist/app-v${APP_VERSION}.tar.gz distt/app-info.txt
 
         '''
       }
@@ -90,6 +93,7 @@ pipeline {
     always {
       echo 'pipeline execution finished'
       archiveArtifacts artifacts: 'app-version.txt'
+      archiveArtifacts artifacts: 'dist/*.tar.gz'
       cleanWs() 
     }
   }
