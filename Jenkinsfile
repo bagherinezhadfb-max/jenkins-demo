@@ -89,7 +89,7 @@ pipeline {
 
     always {
       echo 'pipeline execution finished'
-      archiveArtifacts artifact: 'app-version.txt'
+      archiveArtifacts artifacts: 'app-version.txt'
       cleanWs() 
     }
   }
