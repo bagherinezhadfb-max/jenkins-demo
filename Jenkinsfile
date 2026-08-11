@@ -17,7 +17,7 @@ pipeline {
   }
 
   stages {
-
+   
     stage('Build') {
       steps {
 
@@ -91,6 +91,23 @@ pipeline {
         '''
       }
     }
+    
+    stage('Docker Login') {
+      steps {
+        withCredentials([
+          usernamePassword(
+            credentialsId: 'dockerhub-credentials',
+            usernameValue: 'DOCKER_USER',
+            passwordValue: 'DOCKER_TOKEN'
+          )
+        ]) {
+           sh '''
+             echo "$DOCKER_TOCKEN" | docker login --username "$DOCKER_USER" --password-stdin
+           '''
+        }
+      }
+    }
+
   }
   post {
     
