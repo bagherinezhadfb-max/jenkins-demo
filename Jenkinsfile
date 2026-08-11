@@ -37,7 +37,18 @@ pipeline {
 
     stage('Test') {
       steps {
-      
+        withCredentials([
+          string(
+            credentialsId: 'demo-secret',
+            variable: 'MY_SECRET'
+          )
+        ]) {
+           sh '''
+             echo "Credential is available to Jenkins"
+             echo "Secret value: $MY_SECRET"
+           '''
+        }
+       
         sh 'echo "Running tests..."'
         sh 'echo "Tests passed successfully"'
           
