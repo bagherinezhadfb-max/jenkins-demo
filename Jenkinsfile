@@ -74,7 +74,7 @@ pipeline {
       }
     }
 
-    stage('Docker Build') {
+    stage('Docker Build and push') {
       steps {
         withCredentials([
           usernamePassword(
@@ -85,6 +85,9 @@ pipeline {
         ]) {
            sh '''
              docker build -t "$DOCKER_USER/jenkins-demo:$APP_VERSION" .
+             echo "$DOCKER_TOKEN" | docker login --username "$DOCKER_USER" --password-stdin
+             docker push "$DOCKER_USER/jenkins-demo:$APP_VERSION"
+
            '''
         }
       }
