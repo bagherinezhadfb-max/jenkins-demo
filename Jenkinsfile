@@ -109,7 +109,7 @@ pipeline {
  
       steps {
    
-        input message: 'Deploy to PRODUCTION?', OK: 'Deploy'
+        input message: 'Deploy to PRODUCTION?', ok: 'Deploy'
 
         sh '''
           echo "Deploying to PRODUCTION"
