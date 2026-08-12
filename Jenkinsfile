@@ -74,6 +74,23 @@ pipeline {
       }
     }
 
+    stage('Docker Build') {
+      steps {
+        withCredentials([
+          usernamePassword(
+            credentialsId: 'dockerhub-credentials',
+            usernameVariable: 'DOCKER_USER',
+            passwordVariable: 'DOCKER_TOKEN'
+          )
+        ]) {
+           sh '''
+             docker build -t "$DOCKER_USER/Jenkins-demo:$APP_VERSION"
+           '''
+        }
+      }
+    }
+
+
     stage('Deploy to production') {
    
       when {
