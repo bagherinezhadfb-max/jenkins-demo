@@ -108,20 +108,23 @@ pipeline {
       }
  
       steps {
-        
-        timeout(time: 1, unit: 'MINUTES') {
-          input message: 'Deploy to PRODUCTION?', ok: 'Deploy'
-        }
+        script {
+          try {
+            timeout(time: 1, unit: 'MINUTES') {
+              input message: 'Deploy to PRODUCTION?', ok: 'Deploy'
+            }
 
-        sh '''
-          echo "Deploying to PRODUCTION"
-          echo "version: $APP_VERSION"
+            sh '''
+              echo "Deploying to PRODUCTION"
+              echo "version: $APP_VERSION"
       
-        '''
+            '''
+          } catch(err) {
+              echo "Production deployment was not approved in time."
+          }
+        }
       }
     }
-
-  }
   post {
     
     success {
