@@ -120,6 +120,7 @@ pipeline {
 
           } catch (err) {
               echo "Production deployment was not approved in time."
+              currentBuild.result = 'FAILURE'
           }
         }
       }
