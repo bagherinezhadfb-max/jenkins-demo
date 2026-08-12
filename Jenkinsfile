@@ -2,7 +2,7 @@
 pipeline {
   agent any
   
-  envirenment {
+  environment {
     APP_NAME = 'jenkins-demo'
   } 
 
