@@ -109,6 +109,8 @@ pipeline {
  
       steps {
    
+        input message: 'Deploy to PRODUCTION?', OK: 'Deploy'
+
         sh '''
           echo "Deploying to PRODUCTION"
           echo "version: $APP_VERSION"
