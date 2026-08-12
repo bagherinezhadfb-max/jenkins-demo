@@ -1,6 +1,10 @@
 
 pipeline {
   agent any
+  
+  envirenment {
+    APP_NAME = 'jenkins-demo'
+  } 
 
   parameters {
     string(
@@ -25,6 +29,7 @@ pipeline {
 
           echo "APP_VERSION=$APP_VERSION"
           echo "APP_ENV=$APP_ENV"
+          echo "APP_NAME=$APP_NAME"
           bash build.sh
           mkdir -p dist
           echo "Application version: $APP_VERSION" > app-version.txt
@@ -84,9 +89,9 @@ pipeline {
           )
         ]) {
            sh '''
-             docker build -t "$DOCKER_USER/jenkins-demo:$APP_VERSION" .
+             docker build -t "$DOCKER_USER/$APP_NAME:$APP_VERSION" .
              echo "$DOCKER_TOKEN" | docker login --username "$DOCKER_USER" --password-stdin
-             docker push "$DOCKER_USER/jenkins-demo:$APP_VERSION"
+             docker push "$DOCKER_USER/$APP_NAME:$APP_VERSION"
 
            '''
         }
@@ -109,22 +114,6 @@ pipeline {
           echo "version: $APP_VERSION"
       
         '''
-      }
-    }
-    
-    stage('Docker Login') {
-      steps {
-        withCredentials([
-          usernamePassword(
-            credentialsId: 'dockerhub-credentials',
-            usernameVariable: 'DOCKER_USER',
-            passwordVariable: 'DOCKER_TOKEN'
-          )
-        ]) {
-           sh '''
-             echo "$DOCKER_TOKEN" | docker login --username "$DOCKER_USER" --password-stdin
-           '''
-        }
       }
     }
 
