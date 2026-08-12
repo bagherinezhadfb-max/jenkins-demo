@@ -119,7 +119,7 @@ pipeline {
             '''
 
           } catch (err) {
-              echo "Production deployment was not approved in time.."
+              echo "Production deployment was not approved in time."
           }
         }
       }
