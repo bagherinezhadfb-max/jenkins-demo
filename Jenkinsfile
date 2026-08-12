@@ -1,4 +1,3 @@
-
 pipeline {
   agent any
   
@@ -119,9 +118,9 @@ pipeline {
               echo "version: $APP_VERSION"
       
             '''
-          } catch(err) {
+          } catch (err) {
               echo "Production deployment was not approved in time."
-            }
+          }
         }
       }
     }
