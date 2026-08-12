@@ -84,7 +84,7 @@ pipeline {
           )
         ]) {
            sh '''
-             docker build -t "$DOCKER_USER/Jenkins-demo:$APP_VERSION"
+             docker build -t "$DOCKER_USER/jenkins-demo:$APP_VERSION" .
            '''
         }
       }
