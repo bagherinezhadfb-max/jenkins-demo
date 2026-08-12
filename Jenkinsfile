@@ -108,8 +108,10 @@ pipeline {
       }
  
       steps {
-   
-        input message: 'Deploy to PRODUCTION?', ok: 'Deploy'
+        
+        timeout(time: 1, unit: 'MINUTES') {
+          input message: 'Deploy to PRODUCTION?', ok: 'Deploy'
+        }
 
         sh '''
           echo "Deploying to PRODUCTION"
