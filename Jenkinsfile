@@ -97,7 +97,6 @@ pipeline {
       }
     }
 
-
     stage('Deploy to production') {
    
       when {
@@ -118,12 +117,14 @@ pipeline {
               echo "version: $APP_VERSION"
       
             '''
+
           } catch (err) {
               echo "Production deployment was not approved in time."
           }
         }
       }
     }
+
   post {
     
     success {
