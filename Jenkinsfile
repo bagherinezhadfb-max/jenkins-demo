@@ -17,6 +17,12 @@ pipeline {
       choices: ['staging', 'production'],
       description: 'select application environment'
     )
+    
+    string(
+      name: 'ROLLBACK_VERSION',
+      defaultValue: '',
+      description: 'version to rollback to'
+    )
   }
 
   stages {
@@ -144,6 +150,36 @@ pipeline {
               currentBuild.result = 'FAILURE'
           }
         }
+      }
+    }
+
+    stage('Rollback production') {
+      when {
+        expression {
+          params.POLLBACK_VERSION?.trim()
+        }
+      }
+      steps {
+        withCredentials([
+          usernamePassword(
+            credentialsId: 'dockerhub-credentials',
+            usernameVariable: 'DOCKER_USER',
+            passwordVariable: 'DOCKER_TOKEN'
+          )
+       ]) {
+
+          sh '''
+            echo "Rolling back production to version $ROLLBACK_VERSION"
+            docker pull "$DOCKER_USER/$APP_NAME:$ROLLBACK_VERSION"
+            docker stop jenkins-demo-production || true
+            docker rm jenkins-demo-production || true
+            docker run -d --name jenkins-demo-production -p 8082:80 "$DOCKER_USER/$APP_NAME:$ROLLBACK_VERSION"
+            sleep 3
+            curl -f http://localhost:8082
+            echo "ROLLBACK completed successfully"
+     
+          '''
+       }     
       }
     }
   }
