@@ -137,6 +137,7 @@ pipeline {
                   echo "PRODUCTION health check passed"
       
                 '''
+             }
 
           } catch (err) {
               echo "Production deployment was not approved in time."
