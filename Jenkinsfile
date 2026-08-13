@@ -83,7 +83,7 @@ pipeline {
              docker pull "$DOCKER_USER/$APP_NAME:$APP_VERSION"
              docker stop jenkins-demo-staging || true
              docker rm jenkins-demo-staging || true
-             docker run -d --name jenkins-demo-staging -p 8082:80 "$DOCKER_USER/$APP_NAME:$APP_VERSION"
+             docker run -d --name jenkins-demo-staging -p 8081:80 "$DOCKER_USER/$APP_NAME:$APP_VERSION"
              sleep 3
              curl -f http://localhost:8082
              echo "STAGING health check passed"
@@ -118,12 +118,25 @@ pipeline {
             timeout(time: 1, unit: 'MINUTES') {
               input message: 'Deploy to PRODUCTION?', ok: 'Deploy', submitter: 'admin'
             }
-            
-            sh '''
-              echo "Deploying to PRODUCTION"
-              echo "version: $APP_VERSION"
+            withCredentials([
+              usernamePassword(
+                credentialsId: 'dockerhub-credentials',
+                usernameVariable: 'DOCKER_USER',
+                passwordVariable: 'DOCKER_TOKEN'
+              )
+             ]) {
+
+                sh '''
+                  echo "Deploying version $APP_VERSION to production"
+                  docker pull "$DOCKER_USER/$APP_NAME:$APP_VERSION"
+                  docker stop jenkins-demo-production || true
+                  docker rm jenkins-demo-production || true
+                  docker run -d --name jenkins-demo-production -p 8082:80 $DOCKER_USER/$APP_NAME:$APP_VERSION"
+                  sleep 3
+                  curl -f http://localhost:8082
+                  echo "PRODUCTION health check passed"
       
-            '''
+                '''
 
           } catch (err) {
               echo "Production deployment was not approved in time."
