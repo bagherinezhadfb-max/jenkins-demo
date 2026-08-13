@@ -131,7 +131,7 @@ pipeline {
                   docker pull "$DOCKER_USER/$APP_NAME:$APP_VERSION"
                   docker stop jenkins-demo-production || true
                   docker rm jenkins-demo-production || true
-                  docker run -d --name jenkins-demo-production -p 8082:80 $DOCKER_USER/$APP_NAME:$APP_VERSION"
+                  docker run -d --name jenkins-demo-production -p 8082:80 "$DOCKER_USER/$APP_NAME:$APP_VERSION"
                   sleep 3
                   curl -f http://localhost:8082
                   echo "PRODUCTION health check passed"
