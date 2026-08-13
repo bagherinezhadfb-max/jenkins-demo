@@ -85,7 +85,7 @@ pipeline {
              docker rm jenkins-demo-staging || true
              docker run -d --name jenkins-demo-staging -p 8081:80 "$DOCKER_USER/$APP_NAME:$APP_VERSION"
              sleep 3
-             curl -f http://localhost:8082
+             curl -f http://localhost:8081
              echo "STAGING health check passed"
            '''
         } 
