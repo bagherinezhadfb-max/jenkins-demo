@@ -69,12 +69,24 @@ pipeline {
        }
  
       steps {
+        withCredentials([
+          usernamePassword(
+            credentialsId: 'dockerhub-credentials',
+            usernameVariable: 'DOCKER_USER',
+            passwordVariable: 'DOCKER_TOKEN'
 
-        sh '''   
-          echo "Deploying to STAGING"
-          echo "version: $APP_VERSION"
+          )
+        ]) {
+
+           sh '''   
+             echo "Deploying version $APP_VERSION to STAGING"
+             docker pull "$DOCKER_USER/$APP_NAME:$APP_VERSION"
+             docker stop jenkins-demo-staging || true
+             docker rm jenkins-demo-staging || true
+             docker run -d --name jenkins-demo-staging -p 8082:8080 "$DOCKER_USER/$DOCKER_NAME:$DOCKER_VERSION"
         
-        '''
+           '''
+        } 
       }
     }
 
