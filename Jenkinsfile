@@ -65,7 +65,27 @@ pipeline {
           
       } 
     }
-      
+
+    stage('Docker Build and push') {
+      steps {
+        withCredentials([
+          usernamePassword(
+            credentialsId: 'dockerhub-credentials',
+            usernameVariable: 'DOCKER_USER',
+            passwordVariable: 'DOCKER_TOKEN'
+          )
+        ]) {
+           sh '''
+             docker build -t "$DOCKER_USER/$APP_NAME:$APP_VERSION" .
+             echo "$DOCKER_TOKEN" | docker login --username "$DOCKER_USER" --password-stdin
+             docker push "$DOCKER_USER/$APP_NAME:$APP_VERSION"
+
+           '''
+        }
+      }
+    }
+
+ 
     stage('Deploy to staging') {
 
       when {
@@ -95,25 +115,6 @@ pipeline {
              echo "STAGING health check passed"
            '''
         } 
-      }
-    }
-
-    stage('Docker Build and push') {
-      steps {
-        withCredentials([
-          usernamePassword(
-            credentialsId: 'dockerhub-credentials',
-            usernameVariable: 'DOCKER_USER',
-            passwordVariable: 'DOCKER_TOKEN'
-          )
-        ]) {
-           sh '''
-             docker build -t "$DOCKER_USER/$APP_NAME:$APP_VERSION" .
-             echo "$DOCKER_TOKEN" | docker login --username "$DOCKER_USER" --password-stdin
-             docker push "$DOCKER_USER/$APP_NAME:$APP_VERSION"
-
-           '''
-        }
       }
     }
 
