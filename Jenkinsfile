@@ -83,7 +83,7 @@ pipeline {
              docker pull "$DOCKER_USER/$APP_NAME:$APP_VERSION"
              docker stop jenkins-demo-staging || true
              docker rm jenkins-demo-staging || true
-             docker run -d --name jenkins-demo-staging -p 8082:8080 "$DOCKER_USER/$APP_NAME:$DOCKER_VERSION"
+             docker run -d --name jenkins-demo-staging -p 8082:8080 "$DOCKER_USER/$APP_NAME:$APP_VERSION"
         
            '''
         } 
