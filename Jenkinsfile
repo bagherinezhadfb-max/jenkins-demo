@@ -85,7 +85,7 @@ pipeline {
              docker rm jenkins-demo-staging || true
              docker run -d --name jenkins-demo-staging -p 8082:80 "$DOCKER_USER/$APP_NAME:$APP_VERSION"
              sleep 3
-             curl -f http://localhost:8082/not-found
+             curl -f http://localhost:8082
              echo "STAGING health check passed"
            '''
         } 
@@ -112,13 +112,6 @@ pipeline {
     }
 
     stage('Deploy to production') {
-   
-      when {
-        expression {
-          params.APP_ENV == 'production'
-        } 
-      }
- 
       steps {
         script {
           try {
