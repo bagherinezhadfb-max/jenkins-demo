@@ -157,7 +157,7 @@ pipeline {
     stage('Rollback production') {
       when {
         expression {
-          params.POLLBACK_VERSION?.trim()
+          params.POLLBACK_VERSION?.trim() as boolean
         }
       }
       steps {
