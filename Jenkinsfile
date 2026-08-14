@@ -29,6 +29,11 @@ pipeline {
   stages {
    
     stage('Build') {
+      when {
+        expression {
+          !params.ROLLBACK
+        }
+      }
       steps {
 
         sh '''
@@ -47,6 +52,11 @@ pipeline {
     }
 
     stage('Test') {
+      when {
+        expression {
+          !params.ROLLBACK
+        }
+      }
       steps {
         withCredentials([
           usernamePassword(
@@ -68,6 +78,11 @@ pipeline {
     }
 
     stage('Docker Build and push') {
+      when {
+        expression {
+          !params.ROLLBACK
+        }
+      }
       steps {
         withCredentials([
           usernamePassword(
@@ -88,10 +103,10 @@ pipeline {
 
  
     stage('Deploy to staging') {
-
+     
       when {
         expression {
-          params.APP_ENV == 'staging'
+          params.APP_ENV == 'staging' && !params.ROLLBACK
         }
        }
  
@@ -120,6 +135,11 @@ pipeline {
     }
 
     stage('Deploy to production') {
+      when {
+        expression {
+          !params.ROLLBACK
+        }
+      }
       steps {
         script {
           try {
