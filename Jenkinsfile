@@ -238,6 +238,7 @@ pipeline {
       echo 'pipeline execution finished'
       archiveArtifacts artifacts: 'app-version.txt'
       archiveArtifacts artifacts: 'dist/*.tar.gz'
+      archiveArtifacts allowEmptyArchive: true
       cleanWs() 
     }
   }
