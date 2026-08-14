@@ -19,7 +19,7 @@ pipeline {
       description: 'select application environment'
     )
     
-    boolianParam(
+    booleanParam(
       name: 'ROLLBACK',
       defaultValue: false,
       description: 'Rollback production to the previous version'
