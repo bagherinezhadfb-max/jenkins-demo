@@ -3,6 +3,7 @@ pipeline {
   
   environment {
     APP_NAME = 'jenkins-demo'
+    STATE_DIR = '/opt/jenkins-deployment-srate'
   } 
 
   parameters {
@@ -142,6 +143,18 @@ pipeline {
                   sleep 3
                   curl -f http://localhost:8082
                   echo "PRODUCTION health check passed"
+      
+                  if [ -f "$STATE_DIR/current-version" ]; then
+
+                    cp "$STATE_DIR/current-version" "$STATE_DIR/previous-version"
+                  fi
+                  echo "$APP_VERSION" > "$STATE_DIR/current-version"
+                  echo "current production version: $(cat "$STATE_DIR/current-version")"
+
+                 if [ -f "$STATE_DIR/previous-version" ]; then
+
+                   echo "previous production version: $(cat "$STATE_DIR/previous-version")"
+                 fi
       
                 '''
              }
