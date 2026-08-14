@@ -209,13 +209,27 @@ pipeline {
               exit 1
             fi
             ROLLBACK_VERSION=$(cat "$STATE_DIR/previous-version")
+            CURRENT_VERSION=$(cat "$STATE_DIR/current-version")
+            
+            echo "Current production version: $CURRENT_VERSION"
             echo "Rolling back production to version $ROLLBACK_VERSION"
+
             docker pull "$DOCKER_USER/$APP_NAME:$ROLLBACK_VERSION"
+
             docker stop jenkins-demo-production || true
             docker rm jenkins-demo-production || true
+
             docker run -d --name jenkins-demo-production -p 8082:80 "$DOCKER_USER/$APP_NAME:$ROLLBACK_VERSION"
+
             sleep 3
             curl -f http://localhost:8082
+
+            # update deployment state
+            echo "$CURRENT_VERSION" > "$STATE_DIR/previous-version"
+            echo "$ROLLBACK_VERSION" > "$STATE_DIR/current-version"
+
+            echo "Current production version: $(cat "$STATE_DIR/current-version")"
+            echo "Previous production version: $(cat "$STATE_DIR/previous-version")"
             echo "ROLLBACK completed successfully"
      
           '''
