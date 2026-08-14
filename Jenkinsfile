@@ -19,10 +19,10 @@ pipeline {
       description: 'select application environment'
     )
     
-    string(
-      name: 'ROLLBACK_VERSION',
-      defaultValue: '',
-      description: 'version to rollback to'
+    boolianParam(
+      name: 'ROLLBACK',
+      defaultValue: false,
+      description: 'Rollback production to the previous version'
     )
   }
 
@@ -170,7 +170,7 @@ pipeline {
     stage('Rollback production') {
       when {
         expression {
-          params.ROLLBACK_VERSION?.trim()
+          params.ROLLBACK
         }
       }
       steps {
@@ -183,6 +183,12 @@ pipeline {
        ]) {
 
           sh '''
+            set -e
+            if [ ! -f "$STATE_DIR/previous-version" ]; then
+              echo "No previous production version found."
+              exit 1
+            fi
+            ROLLBACK_VERSION=$(cat "$STATE-DIR/previous-version")
             echo "Rolling back production to version $ROLLBACK_VERSION"
             docker pull "$DOCKER_USER/$APP_NAME:$ROLLBACK_VERSION"
             docker stop jenkins-demo-production || true
