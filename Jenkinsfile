@@ -3,7 +3,7 @@ pipeline {
   
   environment {
     APP_NAME = 'jenkins-demo'
-    STATE_DIR = '/opt/jenkins-deployment-srate'
+    STATE_DIR = '/opt/jenkins-deployment-state'
   } 
 
   parameters {
