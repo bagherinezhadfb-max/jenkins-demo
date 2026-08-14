@@ -237,7 +237,6 @@ pipeline {
     always {
       echo 'pipeline execution finished'
       archiveArtifacts(
-        artifacts: 'app-version.txt',
         artifacts: 'dist/*.tar.gz',
         allowEmptyArchive: true
       )
