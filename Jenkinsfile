@@ -188,7 +188,7 @@ pipeline {
               echo "No previous production version found."
               exit 1
             fi
-            ROLLBACK_VERSION=$(cat "$STATE-DIR/previous-version")
+            ROLLBACK_VERSION=$(cat "$STATE_DIR/previous-version")
             echo "Rolling back production to version $ROLLBACK_VERSION"
             docker pull "$DOCKER_USER/$APP_NAME:$ROLLBACK_VERSION"
             docker stop jenkins-demo-production || true
