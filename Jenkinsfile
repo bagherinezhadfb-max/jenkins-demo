@@ -148,7 +148,7 @@ pipeline {
             }
     
             catchError(
-              buildResult: 'FAILURE'
+              buildResult: 'FAILURE',
               stageResult: 'FAILURE'
             ) {
  
