@@ -184,7 +184,7 @@ pipeline {
       
                '''
             }
-             }
+             
 
           } catch (err) {
               echo "Production deployment failed."
