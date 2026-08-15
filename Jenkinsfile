@@ -145,7 +145,7 @@ pipeline {
           try {
             timeout(time: 1, unit: 'MINUTES') {
               input message: 'Deploy to PRODUCTION?', ok: 'Deploy', submitter: 'admin'
-            {
+            }
  
             withCredentials([
               usernamePassword(
