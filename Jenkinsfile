@@ -142,11 +142,10 @@ pipeline {
       }
       steps {
         script {
-          try {
-            timeout(time: 1, unit: 'MINUTES') {
+          timeout(time: 1, unit: 'MINUTES') {
               input message: 'Deploy to PRODUCTION?', ok: 'Deploy', submitter: 'admin'
-            }
- 
+          }
+          try {
             withCredentials([
               usernamePassword(
                 credentialsId: 'dockerhub-credentials',
@@ -189,6 +188,42 @@ pipeline {
           } catch (err) {
               echo "Production deployment failed."
               echo "starting automatic rollback..."
+
+              withCredentials([
+                usernamePassword(
+                  credentialsId: 'dockerhub-credentials',
+                  usernameVariable: 'DOCKER_USER',
+                  passwordVariable: 'DOCKER_TOKEN'
+                )
+              ]) {
+
+                 sh '''
+                   set -e
+                   if [ ! -f "$STATE_DIR/previous-version" ]; then
+                     echo "No previous production version found."
+                     exit 1
+                   fi
+                   ROLLBACK_VERSION=$(cat "$STATE_DIR/previous-version")
+                   CURRENT_VERSION=$(cat "$STATE_DIR/current-version")
+            
+                   echo "Current production version: $CURRENT_VERSION"
+                   echo "Rolling back production to version $ROLLBACK_VERSION"
+
+                   docker pull "$DOCKER_USER/$APP_NAME:$ROLLBACK_VERSION"
+
+                   docker stop jenkins-demo-production || true
+                   docker rm jenkins-demo-production || true
+  
+                   docker run -d --name jenkins-demo-production -p 8082:80 "$DOCKER_USER/$APP_NAME:$ROLLBACK_VERSION"
+
+                   sleep 3
+                   curl -f http://localhost:8082
+                   echo "Automatic rollback health check passed"
+                   echo "$ROLLBACK_VERSION" > "$STATE_UPDATE/current-version"
+
+                 '''  
+              }    
+
               currentBuild.result = 'FAILURE'
               throw err
           }
