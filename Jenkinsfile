@@ -145,50 +145,52 @@ pipeline {
           try {
             timeout(time: 1, unit: 'MINUTES') {
               input message: 'Deploy to PRODUCTION?', ok: 'Deploy', submitter: 'admin'
-            }
-    
-            catchError(
-              buildResult: 'FAILURE',
-              stageResult: 'FAILURE'
-            ) {
+            {
  
-                withCredentials([
-                  usernamePassword(
-                    credentialsId: 'dockerhub-credentials',
-                    usernameVariable: 'DOCKER_USER',
-                    passwordVariable: 'DOCKER_TOKEN'
-                  ) 
-                ]) {
+            withCredentials([
+              usernamePassword(
+                credentialsId: 'dockerhub-credentials',
+                usernameVariable: 'DOCKER_USER',
+                passwordVariable: 'DOCKER_TOKEN'
+              ) 
+            ]) {
 
-                   sh '''
-                     echo "Deploying version $APP_VERSION to production"
-                     docker pull "$DOCKER_USER/$APP_NAME:$APP_VERSION"
-                     docker stop jenkins-demo-production || true
-                     docker rm jenkins-demo-production || true
-                     docker run -d --name jenkins-demo-production -p 8082:80 "$DOCKER_USER/$APP_NAME:$APP_VERSION"
-                     sleep 3
-                     curl -f http://localhost:8082
-                     echo "PRODUCTION health check passed"
+               sh '''
+               
+                 set -e
+                 if [ -f "$STATE_DIR/current-version" ]; then
+                   cp "$STATE_DIR/current-version" "$STATE_DIR/rollback-target"
+                 fi
       
-                     if [ -f "$STATE_DIR/current-version" ]; then
+                 echo "Rollback target: $(cat "$STATE_DIR/rollback-target")"
+                 docker pull "$DOCKER_USER/$APP_NAME:$APP_VERSION"
+                 docker stop jenkins-demo-production || true
+                 docker rm jenkins-demo-production || true
+                 docker run -d --name jenkins-demo-production -p 8082:80 "$DOCKER_USER/$APP_NAME:$APP_VERSION"
+                 sleep 3
+                 curl -f http://localhost:8082
+                 echo "PRODUCTION health check passed"
 
-                       cp "$STATE_DIR/current-version" "$STATE_DIR/previous-version"
-                     fi
-                     echo "$APP_VERSION" > "$STATE_DIR/current-version"
-                     echo "current production version: $(cat "$STATE_DIR/current-version")"
+                 if [ -f "$STATE_DIR/current-version" ]; then
+                   cp "$STATE_DIR/current-version" "$STATE_DIR/previous-version"
+                 fi
 
-                     if [ -f "$STATE_DIR/previous-version" ]; then
+                 echo "$APP_VERSION" > "$STATE_DIR/current-version"
+                 echo "current production version: $(cat "$STATE_DIR/current-version")"
 
-                     echo "previous production version: $(cat "$STATE_DIR/previous-version")"
-                     fi
+                 if [ -f "$STATE_DIR/previous-version" ]; then
+                   echo "previous production version: $(cat "$STATE_DIR/previous-version")"
+                 fi
       
-                   '''
-                }
+               '''
+            }
              }
 
           } catch (err) {
-              echo "Production deployment was not approved in time."
+              echo "Production deployment failed."
+              echo "starting automatic rollback..."
               currentBuild.result = 'FAILURE'
+              throw err
           }
         }
       }
