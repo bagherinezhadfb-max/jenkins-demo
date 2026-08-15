@@ -146,37 +146,44 @@ pipeline {
             timeout(time: 1, unit: 'MINUTES') {
               input message: 'Deploy to PRODUCTION?', ok: 'Deploy', submitter: 'admin'
             }
-            withCredentials([
-              usernamePassword(
-                credentialsId: 'dockerhub-credentials',
-                usernameVariable: 'DOCKER_USER',
-                passwordVariable: 'DOCKER_TOKEN'
-              )
-             ]) {
+    
+            catchError(
+              buildResult: 'FAILURE'
+              stageResult: 'FAILURE'
+            ) {
+ 
+                withCredentials([
+                  usernamePassword(
+                    credentialsId: 'dockerhub-credentials',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_TOKEN'
+                  ) 
+                ]) {
 
-                sh '''
-                  echo "Deploying version $APP_VERSION to production"
-                  docker pull "$DOCKER_USER/$APP_NAME:$APP_VERSION"
-                  docker stop jenkins-demo-production || true
-                  docker rm jenkins-demo-production || true
-                  docker run -d --name jenkins-demo-production -p 8082:80 "$DOCKER_USER/$APP_NAME:$APP_VERSION"
-                  sleep 3
-                  curl -f http://localhost:8082
-                  echo "PRODUCTION health check passed"
+                   sh '''
+                     echo "Deploying version $APP_VERSION to production"
+                     docker pull "$DOCKER_USER/$APP_NAME:$APP_VERSION"
+                     docker stop jenkins-demo-production || true
+                     docker rm jenkins-demo-production || true
+                     docker run -d --name jenkins-demo-production -p 8082:80 "$DOCKER_USER/$APP_NAME:$APP_VERSION"
+                     sleep 3
+                     curl -f http://localhost:8082
+                     echo "PRODUCTION health check passed"
       
-                  if [ -f "$STATE_DIR/current-version" ]; then
+                     if [ -f "$STATE_DIR/current-version" ]; then
 
-                    cp "$STATE_DIR/current-version" "$STATE_DIR/previous-version"
-                  fi
-                  echo "$APP_VERSION" > "$STATE_DIR/current-version"
-                  echo "current production version: $(cat "$STATE_DIR/current-version")"
+                       cp "$STATE_DIR/current-version" "$STATE_DIR/previous-version"
+                     fi
+                     echo "$APP_VERSION" > "$STATE_DIR/current-version"
+                     echo "current production version: $(cat "$STATE_DIR/current-version")"
 
-                 if [ -f "$STATE_DIR/previous-version" ]; then
+                     if [ -f "$STATE_DIR/previous-version" ]; then
 
-                   echo "previous production version: $(cat "$STATE_DIR/previous-version")"
-                 fi
+                     echo "previous production version: $(cat "$STATE_DIR/previous-version")"
+                     fi
       
-                '''
+                   '''
+                }
              }
 
           } catch (err) {
